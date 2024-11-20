@@ -1481,3 +1481,110 @@ int main()
 
     return 0;
 }
+
+//-------------------------------2029_Honey_Reservoir------------------------------------
+
+#include <stdio.h>
+#define PI 3.14
+
+int main()
+{
+    double v, r, h, d, a;
+
+    while (scanf("%lf %lf", &v, &d) != EOF)
+    {
+        r = d / 2;
+        a = PI * r * r;
+        h = v / a;
+        printf("ALTURA = %.2lf\n", h);
+        printf("AREA = %.2lf\n", a);
+    }
+    return 0;
+}
+
+//-----------------------------------1618_Colision--------------------------------
+
+#include <stdio.h>
+
+int main()
+{
+    int test, ax, ay, bx, by, cx, cy, dx, dy, rx, ry;
+    scanf("%d", &test);
+    while (test--)
+    {
+        scanf("%d %d %d %d %d %d %d %d %d %d", &ax, &ay, &bx, &by, &cx, &cy, &dx, &dy, &rx, &ry);
+        if (rx >= ax && rx <= bx && rx >= dx && rx <= cx && ry >= ay && ry <= dy && ry >= by && ry <= cy)
+            printf("1\n");
+        else
+            printf("0\n");
+    }
+    return 0;
+}
+
+//---------------------------1177_Array_Fill_II-------------------------------
+
+#include <stdio.h>
+int main()
+{
+    int x, y, z;
+    scanf("%d", &x);
+    for (y = 0, z = 0; y < 1000; y++)
+    {
+        printf("N[%d] = %d\n", y, z);
+        z++;
+        if (z == x)
+            z = 0;
+    }
+    return 0;
+}
+
+//------------------------------1318_Fake_Tickets--------------------------------
+
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+    int n, m, count, d;
+    int i, j;
+    int arr[10001];
+    while (scanf("%d %d", &n, &m) != EOF)
+    {
+        if (n == 0 && m == 0)
+            break;
+        memset(arr, 0, sizeof(arr)); // Sets all elements of arr to 0
+        count = 0;
+        for (j = 0; j < m; j++)
+        {
+
+            scanf("%d", &d);
+            arr[d]++;
+            if (arr[d] == 2)
+                count++;
+        }
+        printf("%d\n", count);
+    }
+    return 0;
+}
+
+//---------------------------2167_Engine_Failure--------------------------
+
+#include <stdio.h>
+
+int main()
+{
+    int test, tmp = 0, RPM, count = 0, indx = 0;
+    scanf("%d", &test);
+    while (test--)
+    {
+        scanf("%d", &RPM);
+        count++;
+        if (RPM < tmp && indx == 0)
+        {
+            indx = count;
+        }
+        tmp = RPM;
+    }
+    printf("%d\n", indx);
+    return 0;
+}
+
