@@ -610,6 +610,166 @@ int main()
 }
 
 
+
+//-----------------------------------------------------------------------------
+//-------------------------Student list using AVL tree-------------------------
+//-----------------------------------------------------------------------------
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Student {
+    int student_id;
+    char name[100];
+    float gpa;
+} Student;
+
+typedef struct AVLTreeNode {
+    Student student;
+    struct AVLTreeNode* left;
+    struct AVLTreeNode* right;
+    int height;
+} AVLTreeNode;
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int height(AVLTreeNode* node) {
+    if (node == NULL)
+        return 0;
+    return node->height;
+}
+
+int getBalance(AVLTreeNode* node) {
+    if (node == NULL)
+        return 0;
+    return height(node->left) - height(node->right);
+}
+
+AVLTreeNode* createNode(Student student) {
+    AVLTreeNode* newNode = (AVLTreeNode*)malloc(sizeof(AVLTreeNode));
+    newNode->student = student;
+    newNode->left = newNode->right = NULL;
+    newNode->height = 1;
+    return newNode;
+}
+
+AVLTreeNode* rightRotate(AVLTreeNode* y) {
+    AVLTreeNode* x = y->left;
+    AVLTreeNode* T2 = x->right;
+
+    x->right = y;
+    y->left = T2;
+
+    y->height = max(height(y->left), height(y->right)) + 1;
+    x->height = max(height(x->left), height(x->right)) + 1;
+
+    return x;
+}
+
+AVLTreeNode* leftRotate(AVLTreeNode* x) {
+    AVLTreeNode* y = x->right;
+    AVLTreeNode* T2 = y->left;
+
+    y->left = x;
+    x->right = T2;
+
+    x->height = max(height(x->left), height(x->right)) + 1;
+    y->height = max(height(y->left), height(y->right)) + 1;
+
+    return y;
+}
+
+AVLTreeNode* insert(AVLTreeNode* node, Student student) {
+    if (node == NULL)
+        return createNode(student);
+
+    if (student.student_id < node->student.student_id)
+        node->left = insert(node->left, student);
+    else if (student.student_id > node->student.student_id)
+        node->right = insert(node->right, student);
+    else
+        return node;  // Duplicate IDs are not allowed
+
+    node->height = 1 + max(height(node->left), height(node->right));
+
+    int balance = getBalance(node);
+
+    // Left Left Case
+    if (balance > 1 && student.student_id < node->left->student.student_id)
+        return rightRotate(node);
+
+    // Right Right Case
+    if (balance < -1 && student.student_id > node->right->student.student_id)
+        return leftRotate(node);
+
+    // Left Right Case
+    if (balance > 1 && student.student_id > node->left->student.student_id) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+
+    // Right Left Case
+    if (balance < -1 && student.student_id < node->right->student.student_id) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+
+    return node;
+}
+
+void inorderTraversal(AVLTreeNode* root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);
+        printf("ID: %d\nName: %s\nGPA: %.2f\n", root->student.student_id, root->student.name, root->student.gpa);
+        inorderTraversal(root->right);
+    }
+}
+
+void displayStudentList(AVLTreeNode* root) {
+    printf("Student List (Sorted by Student ID):\n");
+    inorderTraversal(root);
+}
+
+int main() {
+    AVLTreeNode* root = NULL;
+    int n;
+
+    // Ask the user how many students they want to enter
+    printf("Enter the number of students: ");
+    scanf("%d", &n);
+    getchar();  // To consume the newline character after the integer input
+
+    for (int i = 0; i < n; i++) {
+        Student student;
+        
+        // Take user input for student ID, name, and GPA
+        printf("\nEnter details for student %d:\n", i + 1);
+        printf("Student ID: ");
+        scanf("%d", &student.student_id);
+        getchar();  // To consume the newline character after the integer input
+        
+        printf("Student Name: ");
+        fgets(student.name, sizeof(student.name), stdin);
+        student.name[strcspn(student.name, "\n")] = '\0';  // Remove trailing newline from name
+        
+        printf("GPA: ");
+        scanf("%f", &student.gpa);
+        
+        // Insert the student into the AVL tree
+        root = insert(root, student);
+    }
+
+    // Display the student list in sorted order by student ID
+    displayStudentList(root);
+
+    return 0;
+}
+
+
+
 //---------------------------------------------------------
 //--------------------------- END -------------------------
 //---------------------------------------------------------
